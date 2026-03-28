@@ -1,0 +1,49 @@
+from typing import List
+
+class Solution:
+    def findTheString(self, lcp: List[List[int]]) -> str:
+        n = len(lcp)
+        
+        
+        for i in range(n):
+            if lcp[i][i] != n - i:
+                return ""
+        
+        
+        res = ['?'] * n
+        curr = 0
+        
+        for i in range(n):
+            if res[i] == '?':
+                if curr >= 26:
+                    return ""
+                
+                ch = chr(ord('a') + curr)
+                
+                for j in range(i, n):
+                    if lcp[i][j] > 0:
+                        res[j] = ch
+                
+                curr += 1
+        
+       
+        for i in range(n):
+            if res[i] == '?':
+                return ""
+        
+        word = ''.join(res)
+        
+        
+        dp = [[0] * (n + 1) for _ in range(n + 1)]
+        
+        for i in range(n - 1, -1, -1):
+            for j in range(n - 1, -1, -1):
+                if word[i] == word[j]:
+                    dp[i][j] = 1 + dp[i + 1][j + 1]
+                else:
+                    dp[i][j] = 0
+                
+                if dp[i][j] != lcp[i][j]:
+                    return ""
+        
+        return word
